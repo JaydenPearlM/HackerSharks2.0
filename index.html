@@ -1,0 +1,141 @@
+@@ -3,33 +3,114 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy Companion</title>
+    <link rel="icon" href="Study.icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+
+    <title>Document</title>
+</head>
+<body>
+    <form id="sign-up-form">
+        <input type="email" id="sign-up-email" placeholder="Email" required>
+        <input type="password" id="sign-up-password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <!-- Sign In Form -->
+    <form id="sign-in-form">
+        <input type="email" id="sign-in-email" placeholder="Email" required>
+        <input type="password" id="sign-in-password" placeholder="Password" required>
+        <button type="submit">Sign In</button>
+    </form>
+
+    <button id="logout-button">Log Out</button>
+
+
+    <div id="auth-status"></div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0_vQhCqBAd2jJoQoUb5auKi_A0qDU4tA",
+            authDomain: "wafflehouse-hackaton.firebaseapp.com",
+            projectId: "wafflehouse-hackaton",
+            storageBucket: "wafflehouse-hackaton.appspot.com",
+            messagingSenderId: "1048829298374",
+            appId: "1:1048829298374:web:2a36ea5afa75f2d7da39c7",
+            measurementId: "G-CQZ1MMHB7T"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Set persistence to session
+        setPersistence(auth, browserSessionPersistence)
+          .then(() => {
+              // Sign Up
+              document.getElementById('sign-up-form').addEventListener('submit', async (e) => {
+                  e.preventDefault();
+                  const email = document.getElementById('sign-up-email').value;
+                  const password = document.getElementById('sign-up-password').value;
+                  try {
+                      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                      const user = userCredential.user;
+                      console.log('User signed up:', user);
+                  } catch (error) {
+                      const errorCode = error.code;
+                      const errorMessage = error.message;
+                      console.error('Error signing up:', errorCode, errorMessage);
+                  }
+              });
+
+              // Sign In
+              document.getElementById('sign-in-form').addEventListener('submit', async (e) => {
+                  e.preventDefault();
+                  const email = document.getElementById('sign-in-email').value;
+                  const password = document.getElementById('sign-in-password').value;
+                  try {
+                      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                      const user = userCredential.user;
+                      console.log('User signed in:', user);
+                  } catch (error) {
+                      const errorCode = error.code;
+                      const errorMessage = error.message;
+                      console.error('Error signing in:', errorCode, errorMessage);
+                  }
+              });
+          })
+          .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.error('Error setting persistence:', errorCode, errorMessage);
+          });
+
+        // Monitor auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-status').textContent = `Logged in as: ${user.email}`;
+                console.log('User is signed in:', user);
+            } else {
+                document.getElementById('auth-status').textContent = 'Not logged in';
+                console.log('No user is signed in.');
+            }
+        });
+
+        // Logout
+    const logoutButton = document.getElementById('logout-button');
+    logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        auth.signOut()
+            .then(() => {
+                console.log('User signed out successfully');
+            })
+            .catch((error) => {
+                console.error('Error signing out:', error);
+            });
+    });
+</script>
+    <div class="navbar">
+        <ul>
+            <li id= "logo"><img src="Study.icon.png" width=40px height=40px></li>
+            <li>Study Scheduler</li>
+            <li>Studying Methods</li>
+            <li>Quiz</li>
+        </ul>
+    </div>
+
+    <div class="header-container">
+        <div>
+            <h1>Welcome to Smart Study!</h1>
+            <br>
+            <h4>Have problems studying for a course?<br> Sign up Today!</h4>
+            <button>Sign Up!</button>
+        </div>
+        <img src="StudentStudy.jpg" alt="Student studying">
+    </div>
+    
+</body>
+</html>
+</html>
